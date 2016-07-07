@@ -17,12 +17,6 @@
 namespace MemoryManager
 
 {
-	
-	//DELETE LATER
-	void print();
-	//DELETE DELETE DELETE
-
-
 	void memView(int start, int end);
 
 	//---

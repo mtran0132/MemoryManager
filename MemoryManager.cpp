@@ -119,26 +119,60 @@ namespace MemoryManager
 		return (void*)(MM_pool + freeMemLoc + 6);											//Returns address for user.
 	}
 
-	// Delete Delete Delete Delete Delete Delete Delete 
-	void print()
-	{
-		for (int i = 0; i < 51; i++)
-		{
-			cout << setw(11) << i << ": " << *((short*)(MM_pool + i)) << endl;
-			if (i % 2 != 0) cout << "------------------"<<endl;
-		}
-		
-	} //Delete Delete Delete Delete Delete Delete Delete Delete 
-
-
 	// Free up a chunk previously allocated
 
 	void deallocate(void* aPointer)
 
-	{
+	{	
+		unsigned short *head = (unsigned short*)(MM_pool + (*(unsigned short*)(MM_pool + 4)));  //sets 'head' to point to the start of the used list
+		int lastUsedLoc = (*(unsigned short*)(MM_pool + 4));
+		unsigned short *thisNode = ((unsigned short*) aPointer) - 3;	
+		unsigned short *prevNode = (unsigned short*)(MM_pool + *(thisNode + 2));				//sets prevNode to thisNode's prevnode
+		unsigned short *nextNode = (unsigned short*)(MM_pool + *(thisNode + 1));				//sets nextNode to thisNode's nextNode		
 
-		// TODO: IMPLEMENT ME
+		if (*((unsigned short*)(MM_pool + 4)) == 0)
+		{
+			*(unsigned short*)(MM_pool + 4) = *(prevNode + 1);
+			*(prevNode + 1) = *(thisNode + 1);													//Updates the prev node to point to next node
+			*(nextNode + 2) = *(thisNode + 2);													//Updates the next node to point to prev node
+			*(thisNode + 2) = 0;																//removes the node from the list
+			*(thisNode + 1) = 0;																//removes the node from the list
+		}
+		else
+		{
+			if (*(thisNode + 1) == 0 && *(thisNode + 2) == 0)
+			{
+				*(unsigned short*)(MM_pool+4) = *(unsigned short*)(MM_pool + 2);
+				*(unsigned short*)(MM_pool + 2) = 0;
+				*(thisNode + 1) = lastUsedLoc;
+				*(thisNode + 2) = 0;
+			}
+			else
+			{
+				if (*(thisNode + 2) != 0)
+				{
+					*(unsigned short*)(MM_pool + 4) = *(prevNode + 1);
+					*(prevNode + 1) = *(thisNode + 1);													//Updates the prev node to point to next node
+				}
+				else
+				{
+					*(unsigned short*)(MM_pool + 2) = *(thisNode + 1);
+					*(unsigned short*)(MM_pool + 4) = *(nextNode + 2);
 
+				}
+				*(head + 2) = *(unsigned short*)(MM_pool + 4);
+				if (*(thisNode + 1) != 0)
+				{
+					*(nextNode + 2) = *(thisNode + 2);													//Updates the next node to point to prev node
+				}
+				else
+				{
+					*(prevNode + 1) = *(thisNode + 1);
+				}
+				*(thisNode + 1) = lastUsedLoc;
+				*(thisNode + 2) = 0;
+			}
+		}
 	}
 
 	//---
@@ -153,7 +187,7 @@ namespace MemoryManager
 
 	{
 
-		return MM_POOL_SIZE - inUseMemory() - 6 ;// your solution goes here
+		return MM_POOL_SIZE - inUseMemory() - 6 - usedMemory() ;
 
 	}
 
@@ -162,9 +196,28 @@ namespace MemoryManager
 	int usedMemory(void)
 
 	{
-
-		return (*(short*)(MM_pool + 4));
-
+		int overhead = 6;
+		int count = 0;
+		int size = 0;
+		unsigned short *thisNode = (unsigned short*)(MM_pool + *(unsigned short*)(MM_pool + 4));
+		if (*(MM_pool + 4) == 0)
+		{
+			return size;
+		}
+		else
+		{
+			while (true)
+			{
+				size += *(thisNode);                                                    //Updates size
+				count++;
+				if (*(thisNode + 1) == 0)
+				{
+					break;
+				}
+				thisNode = (unsigned short*)(MM_pool + *(thisNode + 1));				//Moves thisNode down the link list
+			}
+		}
+		return size + count*overhead;
 	}
 
 	// Will scan the memory pool and return the total in use memory
@@ -172,9 +225,29 @@ namespace MemoryManager
 	int inUseMemory(void)
 
 	{
+		int overhead = 6;
+		int count = 0;
+		int size = 0;
+		unsigned short *thisNode = (unsigned short*)(MM_pool + *(unsigned short*)(MM_pool + 2));
 
-		return (*(short*)MM_pool) - 6;  // your solution goes here
-
+		if (*(unsigned short*)(MM_pool + 2) == 0)
+		{
+			return size;
+		}
+		else
+		{
+			while (true)
+			{
+				size += *(thisNode);                                                    //Updates size
+				count++;
+				if (*(thisNode + 1) == 0)
+				{
+					break;
+				}
+				thisNode = (unsigned short*)(MM_pool + *(thisNode + 1));				//Moves thisNode down the link list
+			}
+		}
+		return size + count*overhead;
 	}
 
 }
