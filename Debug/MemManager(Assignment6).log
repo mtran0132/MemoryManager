@@ -1,0 +1,3 @@
+﻿  MemoryManager.cpp
+d:\users\mtran0132\documents\visual studio 2015\projects\memmanager(assignment6)\memmanager(assignment6)\memorymanager.cpp(36): warning C4554: '<<': check operator precedence for possible error; use parentheses to clarify precedence
+  MemManager(Assignment6).vcxproj -> d:\users\mtran0132\documents\visual studio 2015\Projects\MemManager(Assignment6)\Debug\MemManager(Assignment6).exe
