@@ -32,6 +32,8 @@ I'm not sure if byte size stays constant but for MemoryManager these are the siz
 5. ???
 6. Profit
 7. Edit the main.cpp if you so desire
+
+
 ###MemoryManager.h
 * void* allocate(int)  
 
