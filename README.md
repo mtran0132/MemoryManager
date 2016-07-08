@@ -5,9 +5,10 @@ Written in C++, the MemoryManager was means to better understand pointers. The p
 >This is in contrast to static memory allocation such as declaring a variable, an instance of an object or an array of some data type.
 
 #Features 
-*65536 byes of memory available to the user
-*Keeps track of how much memory is available
-*Keeps track of how much memory has been used
+
+* 65536 bytes of memory avaiable to the user
+* Keeps track of how much memory is available
+* Keeps track of how muhc memory has been used
 
 #Key Concepts to Understand
 * Pointers
